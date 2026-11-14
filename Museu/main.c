@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include <stdlib.h>
 #include "camera.h"
 #include "scene.h"
 
@@ -50,6 +51,49 @@ void inicializa()
     inicializaCena();
 }
 
+// teclas normais
+void teclado(unsigned char tecla, int x, int y)
+{
+    switch (tecla)
+    {
+        // movimentacao da camera
+        case 'w': case 'W': andaFrente(0.3f); break;
+        case 's': case 'S': andaFrente(-0.3f); break;
+        case 'a': case 'A': andaLado(-0.3f); break;
+        case 'd': case 'D': andaLado(0.3f); break;
+        case 'q': case 'Q': sobeDesce(0.3f); break;
+        case 'e': case 'E': sobeDesce(-0.3f); break;
+
+        // projecoes
+        case 'p': case 'P': usaPerspectiva();break;
+        case 'o': case 'O': usaOrtografica(); break;
+
+        // sombreamento
+        case 'f': case 'F': usaFlat(); break;
+        case 'g': case 'G': usaSmooth(); break;
+
+        // luz e animacao
+        case 'l': case 'L': alternaIluminacao(); break;
+        case ' ': alternaAnimacao(); break;
+
+        // esc fecha o programa
+        case 27: exit(0);
+    }
+}
+
+// setas giram a camera
+//esquerda e direita viram pros lados e cima e baixo inclinam o olhar
+void teclasEspeciais(int tecla, int x, int y)
+{
+    switch (tecla)
+    {
+        case GLUT_KEY_LEFT: giraCamera(-0.05f, 0.0f); break;
+        case GLUT_KEY_RIGHT: giraCamera(0.05f, 0.0f); break;
+        case GLUT_KEY_UP: giraCamera(0.0f, 0.05f); break;
+        case GLUT_KEY_DOWN: giraCamera(0.0f, -0.05f); break;
+    }
+}
+
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -63,6 +107,10 @@ int main(int argc, char** argv)
     glutDisplayFunc(desenho);
     glutReshapeFunc(reshape);   
     glutIdleFunc(idle);
+
+    // registra as funcoes do teclado
+    glutKeyboardFunc(teclado);
+    glutSpecialFunc(teclasEspeciais);
 
     glutMainLoop();
 
